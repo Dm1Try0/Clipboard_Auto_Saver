@@ -18,8 +18,11 @@ last_saved_text = None
 # Настройка сохранения временных меток (будет задана при запуске)
 save_timestamps = True
 
+# Настройка воспроизведения звука (будет задана при запуске)
+enable_sound = True
+
 def check_clipboard():
-    global last_saved_text, save_timestamps, OUTPUT_FILE
+    global last_saved_text, save_timestamps, OUTPUT_FILE, enable_sound
     try:
         # Получаем текст из буфера обмена
         text = pyperclip.paste()
@@ -47,27 +50,32 @@ def check_clipboard():
         last_saved_text = text
         
         # Короткий и тихий "клик" для подтверждения автосохранения
-        winsound.Beep(600, 60)
+        if enable_sound:
+            winsound.Beep(600, 60)
         
     except Exception as e:
         # Игнорируем временные ошибки блокировки буфера другими программами
         pass
 
 def main():
-    global save_timestamps, OUTPUT_FILE
+    global save_timestamps, OUTPUT_FILE, enable_sound
     
     # Формируем уникальное имя файла для этой сессии
     start_time_str = time.strftime("%Y-%m-%d_%H-%M-%S")
     OUTPUT_FILE = f"Saved_{start_time_str}.txt"
     
     print("=== НАСТРОЙКА АВТОСОХРАНЕНИЯ ===")
-    choice = input("Добавлять дату и разделители к записям? (y/n, по умолчанию 'y'): ").strip().lower()
-    save_timestamps = (choice != 'n')
+    choice_time = input("Добавлять дату и разделители к записям? (y/n, по умолчанию 'y'): ").strip().lower()
+    save_timestamps = (choice_time != 'n')
+    
+    choice_sound = input("Включить звуковой сигнал при сохранении? (y/n, по умолчанию 'y'): ").strip().lower()
+    enable_sound = (choice_sound != 'n')
     
     print("\n" + "="*45)
     print(f"=== Автоматический мониторинг буфера обмена ===")
     print(f"Режим сохранения: {'С ДАТОЙ И ВРЕМЕНЕМ' if save_timestamps else 'ТОЛЬКО ЧИСТЫЙ ТЕКСТ'}")
-    print(f"Файл сессии: {OUTPUT_FILE}")
+    print(f"Звуковой сигнал:  {'ВКЛЮЧЕН' if enable_sound else 'ВЫКЛЮЧЕН'}")
+    print(f"Файл сессии:      {OUTPUT_FILE}")
     print(f"Как использовать: Просто копируйте текст (Ctrl+C или ПКМ).")
     print(f"Скрипт сам сохранит каждый новый уникальный фрагмент.")
     print(f"Для выхода закройте это окно или нажмите Ctrl+C здесь.\n")
