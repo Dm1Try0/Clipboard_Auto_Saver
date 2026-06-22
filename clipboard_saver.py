@@ -87,11 +87,11 @@ def main():
     except Exception:
         last_saved_text = ""
         
-    # Запуск бесконечного цикла опроса буфера обмена раз в 1 секунду
+    # Запуск бесконечного цикла опроса буфера обмена раз в 0.6 секунд
     try:
         while True:
             check_clipboard()
-            time.sleep(1.0) # Задержка в 1 секунду между проверками
+            time.sleep(0.6) # Задержка в 0.6 секунды между проверками
     except KeyboardInterrupt:
         print("\nМониторинг остановлен.")
 
